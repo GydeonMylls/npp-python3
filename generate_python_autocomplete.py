@@ -22,41 +22,41 @@ __update__ = '11/10/2011'
 
 import sys
 from inspect import isroutine, getdoc, getargspec
-from types import TypeType, StringType, ModuleType
+from types import ModuleType
 from xml.sax.saxutils import quoteattr
 
 def _usage():
   """ Usage """
-  print 'NAME'
-  print '  generate_python_autocomplete.py'
-  print ''
-  print 'SYNOPSIS'
-  print '  generate_python_autocomplete.py [-namespace] [-private] [-no_builtin] [-level n] < [input] > [output]'
-  print '  -h, --help: Help'
-  print '  -s, --namespace: includes functions starting with two underscores (namespaces); default: False'
-  print '  -p, --private: includes functions starting with one underscore (private functions); default: False'
-  print '  -b, --no_builtin: excludes builtin functions and keywords; default: False (i.e. builtin functions and keywords are included)'
-  print '  -l, --level n: searches for functions down to level n+1; default is n=2'
-  print '  input: python file containing all imports for which the autocomplete file has to be generated'
-  print '  output: stdout = python.xml file to be copied in Notepad++/plugins/APIs; the autocomplete file contains functions arguments and description (if available)'
-  print '          stderr = potential errors in modules import'
-  print ''
-  print 'COMMENTS'
-  print '  as input, I recommend to create a python script containing all public and user-defined modules you usually use, for instance:'
-  print '    import sys, cgi, os, re, subprocess'
-  print '    import cx_Oracle as oracle'
-  print '    from rdkit import Chem'
-  print '    sys.path.append("/home/python/my_python_modules/")'
-  print '    import my_module'
-  print ''
-  print 'API'
-  print '  import generate_python_autocomplete'
-  print '  python_xml = generate_python_autocomplete.generate_python_autocomplete(python_script, [namespace=False], [private=False], [no_builtin=False], [level=2])'
-  print ''
-  print 'RELEASE'
-  print '  %s' % __author__
-  print '  Version: %s (%s)\n' % (__version__, __update__)
-  print ''
+  print('NAME')
+  print('  generate_python_autocomplete.py')
+  print('')
+  print('SYNOPSIS')
+  print('  generate_python_autocomplete.py [-namespace] [-private] [-no_builtin] [-level n] < [input] > [output]')
+  print('  -h, --help: Help')
+  print('  -s, --namespace: includes functions starting with two underscores (namespaces); default: False')
+  print('  -p, --private: includes functions starting with one underscore (private functions); default: False')
+  print('  -b, --no_builtin: excludes builtin functions and keywords; default: False (i.e. builtin functions and keywords are included)')
+  print('  -l, --level n: searches for functions down to level n+1; default is n=2')
+  print('  input: python file containing all imports for which the autocomplete file has to be generated')
+  print('  output: stdout = python.xml file to be copied in Notepad++/plugins/APIs; the autocomplete file contains functions arguments and description (if available)')
+  print('          stderr = potential errors in modules import')
+  print('')
+  print('COMMENTS')
+  print('  as input, I recommend to create a python script containing all public and user-defined modules you usually use, for instance:')
+  print('    import sys, cgi, os, re, subprocess')
+  print('    import cx_Oracle as oracle')
+  print('    from rdkit import Chem')
+  print('    sys.path.append("/home/python/my_python_modules/")')
+  print('    import my_module')
+  print('')
+  print('API')
+  print('  import generate_python_autocomplete')
+  print('  python_xml = generate_python_autocomplete.generate_python_autocomplete(python_script, [namespace=False], [private=False], [no_builtin=False], [level=2])')
+  print('')
+  print('RELEASE')
+  print('  %s' % __author__)
+  print('  Version: %s (%s)\n' % (__version__, __update__) )
+  print('')
   sys.exit(1)
 
 def generate_python_autocomplete(python_script, **keywords):
@@ -79,7 +79,7 @@ def generate_python_autocomplete(python_script, **keywords):
 		no_builtin = keywords['no_builtin']
 	if 'level' in keywords:
 		level = keywords['level']
-	if type(python_script) == StringType:
+	if type(python_script) == str:
 		python_script = python_script.split("\n")
 	for line in python_script:
 		line = line.strip()
@@ -94,13 +94,13 @@ def generate_python_autocomplete(python_script, **keywords):
 				else: # import error
 					errors.append("\t-> %s: %s" % (line, errval.args[0]))
 	if no_builtin == False:
-		import __builtin__
+		import builtins
 	for func in dir():
 		imports[func] = 0
 	outputs = {}
 	while len(imports) > 0:
 		new_imports = {}
-		for key, val in imports.iteritems():
+		for key, val in imports.items():
 			process = False
 			item = key.split(".")[-1]
 			if no_builtin == False and key == "__builtin__":
@@ -180,7 +180,7 @@ def generate_python_autocomplete(python_script, **keywords):
 									counter += 1
 						if key.split(".")[0] != "__builtin__" and key not in outputs:
 							outputs[key] = [[], (), ""] #if we add the docs here, the autocomplete won't show the function description when used together with the module, for instance re.findall() vs. findall()
-					elif type(current_function) == TypeType or (type(current_function) == ModuleType and len(key.split(".")) == 1): # to avoid sourcing modules in subclasses
+					elif type(current_function) == type or (type(current_function) == ModuleType and len(key.split(".")) == 1): # to avoid sourcing modules in subclasses
 						if key.split(".")[0] == "__builtin__":
 							if len(key.split(".")) > 1:
 								outputs[key.split(".", 2)[1]] = [[], (), docs]
@@ -197,7 +197,7 @@ def generate_python_autocomplete(python_script, **keywords):
 		from keyword import kwlist
 		for kw in kwlist + ["True", "False", "None"]:
 			outputs[kw] = [[], (), ""]
-	keys = outputs.keys()
+	keys = list(outputs.keys())
 	keys.sort()
 	xml = '<?xml version="1.0" encoding="Windows-1252" ?>\n\
 	<!--\n\
