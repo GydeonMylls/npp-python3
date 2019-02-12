@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+#! /usr/bin/env python
 # G. Gerebtzoff & G. Mills
 
 """
@@ -16,13 +16,17 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-__author__ = 'Gregori Gerebtzoff & Gideon Mills'
-__version__ = '1.2'
-__update__ = '11/10/2011'
+__author__  = 'Gregori Gerebtzoff & Gideon Mills'
+__version__ = '1.4'
+__update__  = '12/02/2019'
 
 import sys
+import six
 from inspect import isroutine, getdoc, getargspec
 from types import ModuleType
+if six.PY2: 
+	from types import TypeType, StringType
+
 from xml.sax.saxutils import quoteattr
 
 def _usage():
@@ -79,7 +83,7 @@ def generate_python_autocomplete(python_script, **keywords):
 		no_builtin = keywords['no_builtin']
 	if 'level' in keywords:
 		level = keywords['level']
-	if type(python_script) == str:
+	if six.PY2 and type(python_script) == StringType or type(python_script) == str:
 		python_script = python_script.split("\n")
 	for line in python_script:
 		line = line.strip()
@@ -94,13 +98,20 @@ def generate_python_autocomplete(python_script, **keywords):
 				else: # import error
 					errors.append("\t-> %s: %s" % (line, errval.args[0]))
 	if no_builtin == False:
-		import builtins
+		if six.PY2:
+			import __builtin__
+		else: 
+			import builtins
 	for func in dir():
 		imports[func] = 0
 	outputs = {}
 	while len(imports) > 0:
 		new_imports = {}
-		for key, val in imports.items():
+		if six.PY2:
+			items = imports.iteritems()
+		else:
+			items = imports.items()
+		for key, val in items:
 			process = False
 			item = key.split(".")[-1]
 			if no_builtin == False and key == "__builtin__":
@@ -130,7 +141,10 @@ def generate_python_autocomplete(python_script, **keywords):
 					if isroutine(current_function):
 						argspec = None
 						try:
-							argspec = getfullargspec(current_function)
+							if six.PY2:
+								argspec = getargspec(current_function)  
+							else:
+								argspec = getfullargspec(current_function)
 							args = argspec[0]
 							keywords = argspec[2]
 							if argspec[3] is None:
@@ -180,7 +194,7 @@ def generate_python_autocomplete(python_script, **keywords):
 									counter += 1
 						if key.split(".")[0] != "__builtin__" and key not in outputs:
 							outputs[key] = [[], (), ""] #if we add the docs here, the autocomplete won't show the function description when used together with the module, for instance re.findall() vs. findall()
-					elif type(current_function) == type or (type(current_function) == ModuleType and len(key.split(".")) == 1): # to avoid sourcing modules in subclasses
+					elif six.PY2 and type(current_function) == TypeType or type(current_function) == type or (type(current_function) == ModuleType and len(key.split(".")) == 1): # to avoid sourcing modules in subclasses
 						if key.split(".")[0] == "__builtin__":
 							if len(key.split(".")) > 1:
 								outputs[key.split(".", 2)[1]] = [[], (), docs]
@@ -201,11 +215,11 @@ def generate_python_autocomplete(python_script, **keywords):
 	keys.sort()
 	xml = '<?xml version="1.0" encoding="Windows-1252" ?>\n\
 	<!--\n\
-	@author Gregori Gerebtzoff\n\
+	@author %s\n\
 	@version %s\n\
 	-->\n<NotepadPlus>\n\
 	<AutoComplete>\n\
-		<Environment ignoreCase="no" startFunc="(" stopFunc=")" paramSeparator="," additionalWordChar = "." />\n' % __version__
+		<Environment ignoreCase="no" startFunc="(" stopFunc=")" paramSeparator="," additionalWordChar = "." />\n' % (__author__,__version__)
 	for key in sorted(outputs.keys()):
 		items = key.split(".")
 		if outputs[key][2] == "" and len(outputs[key][1]) == 0:

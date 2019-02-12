@@ -1,6 +1,6 @@
 Notepad++ Autocompletion for Python
 ====
-V1.3 - 12 February 2019
+V1.4 - 12 February 2019
 
 Usage
 ----
@@ -28,6 +28,7 @@ The built-in functions are added by default. Please have a look at the code for 
 
 Revisions:
 ----
+ * V1.4 - 12 February 2019 - Support for Python 2.x and 3.x via six
  * V1.3 - 12 February 2019 - Update to Python 3.x
  * V1.2 - 11 October 2011 - Added list of reserved keywords (keyword.kwlist) and True, False, None
  * V1.1 - 25 May 2011 - Original release
