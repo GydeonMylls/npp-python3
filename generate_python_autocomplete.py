@@ -34,8 +34,14 @@ import operator
 import sys
 import types
 
-__author__ = "Benjamin Peterson <benjamin@python.org>"
-__version__ = "1.12.0"
+# The following apply to npp-python3 which is located below six in this file
+# These are placed here for ease of future modification
+__author__  = 'Gregori Gerebtzoff & Gideon Mills'
+__version__ = '1.4'
+__update__  = '12/02/2019'
+# The following apply to six  but are not referenced at any point therein
+#__author__ = "Benjamin Peterson <benjamin@python.org>"
+#__version__ = "1.12.0"
 
 
 # Useful for very coarse version differentiation.
@@ -975,9 +981,9 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-__author__  = 'Gregori Gerebtzoff & Gideon Mills'
-__version__ = '1.4'
-__update__  = '12/02/2019'
+#__author__  = 'Gregori Gerebtzoff & Gideon Mills'
+#__version__ = '1.4'
+#__update__  = '12/02/2019'
 
 import sys
 from inspect import isroutine, getdoc, getargspec
