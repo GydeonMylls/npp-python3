@@ -1,4 +1,4 @@
-V1.2 - 11 October 2011
+V1.3 - 12 February 2019
 
 This python script generates a custom python.xml file for advanced auto-completion features within Notepad++.
 The python.xml file has to be copied in the folder: \Notepad++\plugins\APIs\ (you might rename the existing python.xml file or simply overwrite it).
@@ -20,8 +20,12 @@ Restart Notepad++; you're done!
 The built-in functions are added by default. Please have a look at the code for additional options (or run "generate_python_autocomplete.py --help").
 
 Revisions:
+ V1.3 - 12 February 2019 - Update to Python 3.x
  V1.2 - 11 October 2011 - Added list of reserved keywords (keyword.kwlist) and True, False, None
  V1.1 - 25 May 2011 - Original release
 
 G. Gerebtzoff
 October 2011
+
+G. Mills
+February 2019
