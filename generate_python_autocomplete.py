@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-# G. Gerebtzoff
+# G. Gerebtzoff & G. Mills
 
 """
 This program is free software: you can redistribute it and/or modify
@@ -130,7 +130,7 @@ def generate_python_autocomplete(python_script, **keywords):
 					if isroutine(current_function):
 						argspec = None
 						try:
-							argspec = getargspec(current_function)
+							argspec = getfullargspec(current_function)
 							args = argspec[0]
 							keywords = argspec[2]
 							if argspec[3] is None:
